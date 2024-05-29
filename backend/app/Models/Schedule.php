@@ -9,5 +9,5 @@ class Schedule extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['receptionist_id', 'patient_id', 'doctor_id', 'scheduled_time', 'attended'];
+    protected $fillable = ['receptionist_id', 'patient_id', 'doctor_id', 'ubs_id', 'scheduled_time', 'attended'];
 }

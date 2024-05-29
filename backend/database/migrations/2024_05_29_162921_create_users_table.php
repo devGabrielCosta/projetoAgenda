@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('ubs_id');
 
             $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('ubs_id')->references('id')->on('u_b_s')->onDelete('cascade');
+            $table->foreign('ubs_id')->references('id')->on('ubs')->onDelete('cascade');
 
             $table->unique(['doctor_id', 'ubs_id']);
         });

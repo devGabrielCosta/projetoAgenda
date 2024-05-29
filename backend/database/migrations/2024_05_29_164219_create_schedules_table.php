@@ -17,12 +17,14 @@ return new class extends Migration
             $table->unsignedBigInteger('receptionist_id');
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('doctor_id');
+            $table->unsignedBigInteger('ubs_id');
             $table->dateTime('scheduled_time');
             $table->boolean("attended")->default(false);
 
             $table->foreign('receptionist_id')->references('id')->on('users');
             $table->foreign('patient_id')->references('id')->on('users');
             $table->foreign('doctor_id')->references('id')->on('users');
+            $table->foreign('ubs_id')->references('id')->on('ubs');
         });
     }
 
