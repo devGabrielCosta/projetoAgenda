@@ -16,6 +16,11 @@ class UBSController extends Controller
     {
         return UBS::find($id);
     }
+ 
+    public function showDoctors($id)
+    {
+        return UBS::find($id)->doctors;
+    }
 
     public function store(Request $request)
     {

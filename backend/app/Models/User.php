@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Enums\UserType;
 
 class User extends Model
 {
@@ -13,7 +14,6 @@ class User extends Model
   
     public function UBS()
     {
-        if($this->type == App\Models\Enums\UserTypes::Doctor)
-            return $this->belongsToMany(User::class, 'doctors_ubs', 'doctor_id', 'ubs_id');
+        return $this->belongsToMany(User::class, 'doctors_ubs', 'doctor_id', 'ubs_id');
     }
 }
