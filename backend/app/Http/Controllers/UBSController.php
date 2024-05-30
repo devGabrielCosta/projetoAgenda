@@ -9,26 +9,36 @@ class UBSController extends Controller
 {
     public function index()
     {
-        return UBS::all();
+        return response()->json(UBS::all(), 200);
     }
  
     public function show($id)
     {
-        return UBS::find($id);
+        return response()->json(UBS::find($id), 200);
     }
  
     public function showDoctors($id)
     {
-        return UBS::find($id)?->doctors;
+        $ubs = UBS::find($id);
+        
+        if($ubs)
+            return response()->json($ubs->doctors, 200);
+
+        return response()->json("UBS não encotrada", 404);
     }
  
     public function showSchedules($id)
     {
-        return UBS::find($id)?->schedules;
+        $ubs = UBS::find($id);
+        
+        if($ubs)
+            return response()->json($ubs->schedules, 200);
+
+        return response()->json("UBS não encotrada", 404);
     }
 
     public function store(Request $request)
     {
-        return UBS::create($request->all());
+        return response()->json(UBS::create($request->all()), 201);
     }
 }

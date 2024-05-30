@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middlewares\ForceJsonResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -10,8 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         apiPrefix: '/api',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        //
+    ->withMiddleware(function (Middleware $middleware) {       
+        $middleware->prepend(ForceJsonResponse::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

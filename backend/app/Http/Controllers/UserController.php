@@ -10,12 +10,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::all();
+        return response()->json(User::all(), 200);
     }
  
     public function show($id)
     {
-        return User::find($id);
+        return response()->json(User::find($id), 200);
     }
 
     public function store(Request $request)
@@ -25,10 +25,8 @@ class UserController extends Controller
         $user = User::create($fields);
 
         if($user->type === 'Doctor')
-        {   
             $user->UBS()->attach($fields['UBS']);
-        }
 
-        return $user;
+        return response()->json($user, 201);
     }
 }

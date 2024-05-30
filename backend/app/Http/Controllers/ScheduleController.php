@@ -9,41 +9,42 @@ class ScheduleController extends Controller
 {
     public function index()
     {
-        return Schedule::all();
+        return response()->json(Schedule::all(), 200);
     }
  
     public function show($id)
     {
-        return Schedule::find($id);
+        return response()->json(Schedule::find($id), 200);
     }
 
     public function store(Request $request)
     {   
         $fields = $request->all();
 
-        $dateTimeUsed = Schedule::where('scheduled_time', '=', $fields["scheduled_time"])->get();
+        $dateTimeUsed = Schedule::where([
+            ['scheduled_time', '=', $fields["scheduled_time"]],
+            ['doctor_id', '=', $fields["doctor_id"]]
+        ])->get();
 
-        if (!$dateTimeUsed->isEmpty()) {
+        if (!$dateTimeUsed->isEmpty())
             return response()->json('Horário da consulta invalido', 400);
-        }
 
-        return Schedule::create($fields);
+        return response()->json(Schedule::create($fields), 201);
     }
    
     public function patch($id, Request $request)
     {
         $schedule = Schedule::find($id);
 
-        if($request->has('status')) {
+        if($request->has('status'))
             $schedule->status = $request->status;   
-        }
 
         $schedule->save();
-        return $schedule;
+        return response()->json($schedule, 200);
     }
    
     public function delete($id)
     {
-        Schedule::find($id)?->delete();
+        return response()->json(Schedule::find($id)?->delete(), 200);
     }
 }
