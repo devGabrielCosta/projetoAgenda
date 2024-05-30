@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 Use App\Models\Schedule;
 
 class ScheduleController extends Controller
@@ -29,6 +28,18 @@ class ScheduleController extends Controller
         }
 
         return Schedule::create($fields);
+    }
+   
+    public function patch($id, Request $request)
+    {
+        $schedule = Schedule::find($id);
+
+        if($request->has('status')) {
+            $schedule->status = $request->status;   
+        }
+
+        $schedule->save();
+        return $schedule;
     }
    
     public function delete($id)

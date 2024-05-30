@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Enums\ScheduleStatus;
 
 return new class extends Migration
 {
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('doctor_id');
             $table->unsignedBigInteger('ubs_id');
             $table->dateTime('scheduled_time');
-            $table->boolean("attended")->default(false);
+            $table->enum("status", array_column(ScheduleStatus::cases(), 'name'))->default("Created");
 
             $table->foreign('receptionist_id')->references('id')->on('users');
             $table->foreign('patient_id')->references('id')->on('users');

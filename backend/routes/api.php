@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Use App\Http\Controllers\UBSController;
 Use App\Http\Controllers\UserController;
 Use App\Http\Controllers\ScheduleController;
+Use App\Http\Controllers\AssessmentController;
 
 Route::get('/ubs', [UBSController::class, 'index']);
 Route::get('/ubs/{id}', [UBSController::class, 'show']);
@@ -19,4 +20,8 @@ Route::post('/user', [UserController::class, 'store']);
 Route::get('/schedule', [ScheduleController::class, 'index']);
 Route::get('/schedule/{id}', [ScheduleController::class, 'show']);
 Route::post('/schedule', [ScheduleController::class, 'store']);
+Route::patch('/schedule/{id}', [ScheduleController::class, 'patch']);
 Route::delete('/schedule/{id}', [ScheduleController::class, 'delete']);
+
+Route::get('/assessment/{id}', [AssessmentController::class, 'show']);
+Route::post('/assessment', [AssessmentController::class, 'store']);
