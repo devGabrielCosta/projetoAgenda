@@ -1,9 +1,9 @@
 <template>
   <div class="insertScheduleCard">  
-    <h1>Inserir atendimento</h1>
-    <form @submit.prevent="submitForm">
-      <label for="user_id">ID do Usuário:</label>
-      <textarea type="text" id="user_id" v-model="userId"></textarea>
+    <h2>Atendimento {{ this.store.selectedSchedule.id }}<button @click="patientNoShow">Não compareceu</button></h2>
+    <form @submit.prevent="sendForm">
+      <label for="comment">Texto da avaliação</label>
+      <textarea id="comment" v-model="comment"></textarea>
       <button type="submit">Enviar</button>
     </form>
   </div>
@@ -12,6 +12,36 @@
 <script>
 
   export default {
+    props: ['scheduleId'],
+    data() {
+      return {
+        comment: null
+      };
+    },
+    methods: {
+      sendForm()
+      { 
+        this.axios
+          .post('assessment', {
+            schedule_id: this.store.selectedSchedule.id,
+            comment: this.comment
+          })
+          .then(response => {
+            if(response.data)
+              this.store.selectedSchedule = null;
+          })
+      },
+      patientNoShow(){
+        this.axios
+          .patch('schedule/'+this.store.selectedSchedule.id, {
+            status: 'NoShow'
+          })
+          .then(response => {
+            if(response.data)
+              this.store.selectedSchedule = null;
+          })
+      }
+    }
   }
   
 </script>
@@ -20,6 +50,12 @@
 
   .insertScheduleCard{
     background-color: white;
+
+      h2{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
 
       form {
       margin-top: 20px;

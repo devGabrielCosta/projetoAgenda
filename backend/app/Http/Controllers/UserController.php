@@ -8,14 +8,36 @@ Use App\Models\Enums\UserType;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        return response()->json(User::all(), 200);
+    public function index(Request $request)
+    {   
+        if($request->has("type"))
+            $user = User::where('type', $request->type)->get();  
+        else
+            $user = User::all();  
+
+        return response()->json($user, 200);
     }
  
     public function show($id)
     {
         return response()->json(User::find($id), 200);
+    }
+ 
+    public function showSchedules($id, Request $request)
+    {       
+        $user = User::find($id);
+        
+        if($user)
+        {
+            $schedules = $user->schedules;
+
+            if($request->has("ubs_id"))
+                $schedules = $schedules->where("ubs_id", $request->ubs_id);
+
+            return response()->json($schedules, 200);
+        }           
+
+        return response()->json("Usuário não encotrado", 400);
     }
 
     public function store(Request $request)

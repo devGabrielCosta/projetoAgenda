@@ -1,29 +1,34 @@
 <template>
   <div class="insertScheduleCard">
     <h1>Criar Agendamento <button id="show-modal" @click="showModal = true">Inserir Paciente</button></h1>
-    <form @submit.prevent="submitForm">
-      <label for="user_id">Paciente:</label>
-        <select id="role" v-model="selectedRole">
-          <option value="">Selecione...</option>
-          <option value="admin">Administrador</option>
-        </select><br/><br/>    
-      <label for="user_id">UBS:</label>
-        <select id="role" v-model="selectedRole">
-          <option value="">Selecione...</option>
-          <option value="admin">Administrador</option>
-        </select><br/><br/>    
-      <label for="user_id">Doutor:</label>
-        <select id="role" v-model="selectedRole">
-          <option value="">Selecione...</option>
-          <option value="admin">Administrador</option>
-        </select><br/><br/>
+    <form @submit.prevent="sendForm">
+      <label for="patient">Paciente:</label>
+      <select id="patient" v-model="selectedPacient" required>
+        <option :value="null"></option>       
+        <option v-for="(patient, index) in patientList" :value="patient.id" :key="index">
+          {{patient.name}}
+        </option>
+      </select>   
+      <label for="ubs">UBS:</label>
+      <select id="ubs" v-model="selectedUbs" @change="onUbsChanged" required>
+        <option v-for="(ubs, index) in ubsList" :value="ubs.id" :key="index">
+          {{ubs.name}}
+        </option>
+      </select>    
+      <label for="doctor">Doutor:</label>
+      <select id="doctor" v-model="selectedDoctor" required>
+        <option :value="null"></option>       
+        <option v-for="(doctor, index) in doctorList" :value="doctor.id" :key="index">
+          {{doctor.name}}
+        </option>
+      </select>   
       <label for="user_id">Horário:</label>        
-      <input type="datetime-local" id="user_id" v-model="userId"> 
+      <input type="datetime-local" id="user_id" v-model="scheduledTime" required> 
       <br/><br/> 
       <button type="submit">Enviar</button>
     </form>
       <ModalTemplate v-if="showModal" @close="showModal = false">
-          <InsertPatientCard />
+          <InsertPatientCard :parentCallback="closeModal"/>
       </ModalTemplate>
   </div>
 </template>
@@ -36,12 +41,92 @@
   export default {   
     data() {
       return {
-        showModal: false
+        showModal: false,
+        patientList: {},
+        ubsList: {},
+        doctorList: {},
+        selectedPacient: null,
+        selectedUbs: null,
+        selectedDoctor: null,
+        scheduledTime: null,
       };
     },
     components: {
       InsertPatientCard,
       ModalTemplate
+    },
+    mounted(){
+      this.searchPatients();
+      this.searchUbs().then(()=>{
+        this.selectedUbs = this.ubsList[0].id;
+        this.searchDoctors();
+      });     
+    },
+    methods:{
+      closeModal(){
+        this.showModal = false;
+        this.searchPatients();
+      },
+      onUbsChanged(){
+        this.doctorList = [];
+        this.selectedDoctor = null;
+        this.searchDoctors();
+      },
+      async searchUbs(){
+        await this.axios
+          .get('ubs/')
+          .then(response => {
+            if(response.data)
+              this.ubsList = response.data;
+          });
+      },  
+      searchDoctors(){
+        this.axios
+          .get('ubs/'+this.selectedUbs+'/doctors')
+          .then(response => {
+            if(response.data)
+            {
+              this.doctorList = response.data;
+            }
+          })
+      }, 
+      searchPatients(){
+        this.axios
+          .get('user?type=Patient')
+          .then(response => {
+            if(response.data)
+            {
+              this.patientList = response.data;
+            }
+          })
+      },
+      sendForm()
+      { 
+        var body = {
+            receptionist_id: this.store.loggedUser.id,
+            patient_id: this.selectedPacient,
+            doctor_id: this.selectedDoctor,
+            ubs_id: this.selectedUbs,
+            scheduled_time: this.scheduledTime,
+        };
+
+
+        this.axios
+          .post('schedule', body)
+          .then(response => {
+            if(response.data)
+              this.$notify({
+                text: "Agendamento inserido",
+                type: "success"
+              });
+          })
+          .catch(error =>{
+              this.$notify({
+                text: error.response.data,
+                type: "error"
+              });
+          })
+      },
     }
   }
 
@@ -61,14 +146,16 @@
       form {
       margin-top: 20px;
       }
+
       label {
         display: block;
         margin-bottom: 5px;
       }
-      input[type="text"] {
-        width: 200px;
-        padding: 5px;
-        margin-bottom: 10px;
+
+      input,
+      select{
+        min-width: 20%;
+        margin-bottom: 7px;
       }
   }
 

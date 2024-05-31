@@ -1,19 +1,21 @@
 <template>
   <div id="app">
-    <header>
+    <header>  
+      <button v-if="store.loggedUser" @click="logout">Logout</button>
     </header>
     <main>
       <div class="content-delimiter">
-        <template v-if="!loggedUser">
-          <LoginCard  :class="'box-shadow'"/>
+        <template v-if="!store.loggedUser">
+          <LoginCard  :class="'box-shadow fix-padding'"/>
         </template>
         <template v-else>
-          <ScheduleCard :class="'box-shadow fix-size'" />
-          <InsertScheduleCard v-if="loggedUser.role == 'Receptionist'" :class="'box-shadow fix-size'"/>
-          <InsertAssessmentCard v-else-if="loggedUser.role == 'Doctor'" :class="'box-shadow fix-size'"/>
+          <ScheduleCard :class="'box-shadow fix-size fix-padding'" />
+          <InsertScheduleCard v-if="store.loggedUser.type == 'Receptionist'" :class="'box-shadow fix-size fix-padding'"/>
+          <InsertAssessmentCard v-else-if="store.loggedUser.type == 'Doctor' && store.selectedSchedule" :class="'box-shadow fix-size fix-padding'"/>
         </template>
       </div> 
     </main>
+    <notifications class="customize-notification" position="bottom right"/>
   </div>
 </template>
 
@@ -21,17 +23,10 @@
   import LoginCard from './components/LoginCard.vue'
   import ScheduleCard from './components/ScheduleCard.vue'
   import InsertScheduleCard from './components/InsertScheduleCard.vue'
-  import InsertAssessmentCard from './components/InsertAssessmentCard.vue'
+  import InsertAssessmentCard from './components/InsertAssessmentCard.vue' 
 
   export default {
     name: 'App',
-    data() {
-      return {
-        loggedUser: {
-            role: "Receptionist"
-        }
-      };
-    },
 		components: {
 			LoginCard,
       ScheduleCard,
@@ -39,7 +34,10 @@
       InsertAssessmentCard
 		},
     methods: {
-      
+      logout(){
+        this.store.loggedUser = null;
+        this.store.selectedSchedule = null;
+      }
     }
   };
 </script>
@@ -51,9 +49,17 @@
   flex-direction: column;
 }
 
+html{ 
+  font-size: 16px;
+  font-family: sans-serif;
+}
+
 header{
   background-color: black;
   height: 4vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 main{
@@ -72,10 +78,13 @@ main{
   gap: 3vh;
 }
 
+.fix-padding{
+  padding: 2vh;
+}
+
 .fix-size{
   width: 100%;
   height: 40vh;
-  padding: 4vw;
 }
 
 .box-shadow{
@@ -89,8 +98,21 @@ button {
   border: none;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #0056b3;
+}
+
+.customize-notification {
+  .notification-content {
+    font-size: 1.5rem;
+  }
+  /*&.success {
+  }
+  &.info {
+  }
+  &.error {
+  }*/
 }
 
 </style>

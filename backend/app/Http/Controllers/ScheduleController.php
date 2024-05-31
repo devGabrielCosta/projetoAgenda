@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 Use App\Models\Schedule;
 
@@ -20,6 +21,7 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {   
         $fields = $request->all();
+        $fields["scheduled_time"] = Carbon::parse($fields["scheduled_time"])->format("Y-m-d H:i:s");
 
         $dateTimeUsed = Schedule::where([
             ['scheduled_time', '=', $fields["scheduled_time"]],

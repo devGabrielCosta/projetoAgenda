@@ -17,7 +17,18 @@ class User extends Model
     }
    
     public function schedules()
-    {
-        return $this->hasMany(Schedule::class);
+    {   
+        $pivot = [
+            'Doctor' => 'doctor_id',
+            'Patient' => 'patient_id',
+            'Receptionist' =>'receptionist_id'
+        ];
+        
+        $pivotKey = $pivot[$this->type] ?? null;
+    
+        if ($pivotKey) 
+            return $this->hasMany(Schedule::class, $pivotKey);
+        else 
+            throw new \Exception("Tipo de usuário não suportado: {$this->type}");       
     }
 }

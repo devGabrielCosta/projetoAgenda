@@ -1,9 +1,9 @@
 <template>
   <div class="loginCard">  
-    <h1>Formulário</h1>
-    <form @submit.prevent="submitForm">
+    <h1>Login</h1>
+    <form @submit.prevent="sendForm">
       <label for="user_id">ID do Usuário:</label>
-      <input type="text" id="user_id" v-model="userId">
+      <input type="text" id="user_id" v-model="userId" required>
       <button type="submit">Enviar</button>
     </form>
   </div>
@@ -12,6 +12,27 @@
 <script>
 
   export default {
+    data() {
+      return {
+        userId: ""
+      };
+    },
+    methods: {
+      sendForm()
+      { 
+        this.axios
+          .get('user/'+this.userId)
+          .then(response => {
+            if(response.data?.id)
+              this.store.loggedUser = response.data;
+            else
+              this.$notify({
+                text: "Usuário não encotrado",
+                type: "error"
+              });
+          })
+      }
+    }
   }
 
 </script>

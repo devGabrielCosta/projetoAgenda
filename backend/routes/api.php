@@ -15,6 +15,7 @@ Route::post('/ubs', [UBSController::class, 'store']);
 
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
+Route::get('/user/{id}/schedules', [UserController::class, 'showSchedules']);
 Route::post('/user', [UserController::class, 'store']);
 
 Route::get('/schedule', [ScheduleController::class, 'index']);

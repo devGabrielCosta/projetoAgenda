@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 Use App\Models\UBS;
+Use App\Models\User;
 
 class UBSController extends Controller
 {
@@ -24,7 +25,7 @@ class UBSController extends Controller
         if($ubs)
             return response()->json($ubs->doctors, 200);
 
-        return response()->json("UBS não encotrada", 404);
+        return response()->json("UBS não encotrada", 400);
     }
  
     public function showSchedules($id)
@@ -34,7 +35,7 @@ class UBSController extends Controller
         if($ubs)
             return response()->json($ubs->schedules, 200);
 
-        return response()->json("UBS não encotrada", 404);
+        return response()->json("UBS não encotrada", 400);
     }
 
     public function store(Request $request)
