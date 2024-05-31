@@ -1,13 +1,13 @@
 <template>
   <div class="calendar">
     <div class="selectors">
-      <select id="ubs" v-model="selectedUbs" @change="onUbsChanged" v-if="this.store.loggedUser.type != 'Patient'">
-        <option v-if="this.store.loggedUser.type != 'Receptionist'" :value="null"></option>       
+      <select id="ubs" v-model="selectedUbs" @change="onUbsChanged" v-if="loggedType != 'Patient'">
+        <option v-if="loggedType != 'Receptionist'" :value="null"></option>       
         <option v-for="(ubs, index) in ubsList" :value="ubs.id" :key="index">
           {{ubs.name}}
         </option>
       </select>         
-      <select id="doctor" v-model="selectedDoctor" @change="onDoctorChanged" v-if="this.store.loggedUser.type == 'Receptionist'">
+      <select id="doctor" v-model="selectedDoctor" @change="onDoctorChanged" v-if="loggedType == 'Receptionist'">
         <option v-for="(doctor, index) in doctorList" :value="doctor.id" :key="index">
           {{doctor.name}}
         </option>
@@ -19,8 +19,8 @@
           v-for="(schedule, index) in scheduleList" :key="index" 
           :class="[
             'line', 
-            schedule.id == store.selectedSchedule?.id ? 'selected' : '',
-            schedule.status == 'Created' && this.store.loggedUser.type == 'Doctor' ? 'selectable' : ''
+            schedule.id == selectedSchedule?.id ? 'selected' : '',
+            schedule.status == 'Created' && loggedType == 'Doctor' ? 'selectable' : ''
           ]" 
           @click="schedule.status == 'Created' ? onClickSchedule($event, schedule) : ''"
       >
@@ -33,21 +33,26 @@
 </template>
 
 <script>
-  import { watch } from 'vue';
+  import { watch, inject, watchEffect } from 'vue';
 
   export default {
-    data() {
-      
+    data() {     
+      const viewState = inject('viewState');
+
       return {
         ubsList: [],
         doctorList: [],
         scheduleList: [],
         selectedUbs: null,
-        selectedDoctor: null
+        selectedDoctor: null,
+        loggedType: this.$store.getters.getLoggedType,
+        loggedId: this.$store.getters.getLoggedId,
+        selectedSchedule: null,
+        viewState
       }
     },
     mounted(){   
-      switch(this.store.loggedUser.type){
+      switch(this.loggedType){
         case 'Patient': 
           this.searchSchedules(); 
           break;
@@ -63,11 +68,15 @@
           });
           break;
       }
-             
-      watch(() => this.store.selectedSchedule, (newValue) => {
+
+      watch(() => this.selectedSchedule, (newValue) => {
         if (newValue === null) {
           this.searchSchedules();
         }
+      });
+
+      watchEffect(() => {
+        this.selectedSchedule = this.viewState.selectedSchedule
       });
       
     },
@@ -76,15 +85,15 @@
         this.doctorList = [];
         this.scheduleList = [];
         this.selectedDoctor = null;
-        this.store.selectedSchedule = null;
+        this.changeStateSchedule(null);
         this.searchSchedules();
 
-        if(this.store.loggedUser.type == 'Receptionist')
+        if(this.loggedType == 'Receptionist')
           this.searchDoctors();
       },
       onDoctorChanged(){
         this.scheduleList = [];
-        this.store.selectedSchedule = null;  
+        this.changeStateSchedule(null);
         this.searchSchedules();
       },
       async searchUbs(){
@@ -105,26 +114,23 @@
             }
           })
       },    
-      searchSchedules(){    
+      searchSchedules(){  
         var routes = {
-          "Patient": 'user/'+this.store.loggedUser.id+'/schedules',
-          "Doctor":  'user/'+this.store.loggedUser.id+'/schedules',
-          "Doctor2":  'user/'+this.store.loggedUser.id+'/schedules'+'?ubs_id='+this.selectedUbs,
-          "Receptionist":  'ubs/'+this.selectedUbs+'/schedules',
-          "Receptionist2":  'user/'+this.selectedDoctor+'/schedules'+'?ubs_id='+this.selectedUbs,
+          "Patient": 'user/'+this.loggedId+'/schedules',
+          "Doctor": 'user/'+this.loggedId+'/schedules',
+          "Doctor2": 'user/'+this.loggedId+'/schedules'+'?ubs_id='+this.selectedUbs,
+          "Receptionist": 'ubs/'+this.selectedUbs+'/schedules',
+          "Receptionist2": 'user/'+this.selectedDoctor+'/schedules'+'?ubs_id='+this.selectedUbs,
         };
 
         var changeQuery = {
           "Doctor": this.selectedUbs != null,
           "Receptionist": this.selectedDoctor != null
         }
-        
-        var type = this.store.loggedUser.type;
+        var type = this.loggedType;
         var selector = type;
         selector += changeQuery[type] ? '2' : '';
         var selectedRoute = routes[selector];
-
-        console.log(selectedRoute);
 
         this.axios
           .get(selectedRoute)
@@ -134,7 +140,10 @@
           })
       },
       onClickSchedule(event, schedule){
-        this.store.selectedSchedule = schedule;          
+        this.changeStateSchedule(schedule);          
+      },
+      changeStateSchedule(schedule){
+        this.viewState.selectedSchedule = schedule
       }
     }
   }

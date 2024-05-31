@@ -1,6 +1,6 @@
 <template>
   <div class="insertScheduleCard">  
-    <h2>Atendimento {{ this.store.selectedSchedule.id }}<button @click="patientNoShow">Não compareceu</button></h2>
+    <h2>Atendimento {{ selectedSchedule?.id }}<button @click="patientNoShow">Não compareceu</button></h2>
     <form @submit.prevent="sendForm">
       <label for="comment">Texto da avaliação</label>
       <textarea id="comment" v-model="comment"></textarea>
@@ -11,35 +11,49 @@
 
 <script>
 
+  import { watchEffect, inject } from 'vue';
+
   export default {
     props: ['scheduleId'],
     data() {
+      const viewState = inject('viewState');
+
       return {
-        comment: null
+        comment: null,
+        selectedSchedule: null,
+        viewState
       };
+    },  
+    mounted(){
+      watchEffect(() => {
+        this.selectedSchedule = this.viewState.selectedSchedule;
+      }) 
     },
     methods: {
       sendForm()
       { 
         this.axios
           .post('assessment', {
-            schedule_id: this.store.selectedSchedule.id,
+            schedule_id: this.selectedSchedule.id,
             comment: this.comment
           })
           .then(response => {
             if(response.data)
-              this.store.selectedSchedule = null;
+              this.changeStateSchedule(null);
           })
       },
       patientNoShow(){
         this.axios
-          .patch('schedule/'+this.store.selectedSchedule.id, {
+          .patch('schedule/'+this.selectedSchedule.id, {
             status: 'NoShow'
           })
           .then(response => {
             if(response.data)
-              this.store.selectedSchedule = null;
+              this.changeStateSchedule(null);
           })
+      },
+      changeStateSchedule(schedule){
+        this.viewState.selectedSchedule = schedule
       }
     }
   }

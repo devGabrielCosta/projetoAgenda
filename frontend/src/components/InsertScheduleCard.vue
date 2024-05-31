@@ -49,6 +49,7 @@
         selectedUbs: null,
         selectedDoctor: null,
         scheduledTime: null,
+        loggedId: this.$store.getters.getLoggedId,
       };
     },
     components: {
@@ -103,7 +104,7 @@
       sendForm()
       { 
         var body = {
-            receptionist_id: this.store.loggedUser.id,
+            receptionist_id: this.loggedId,
             patient_id: this.selectedPacient,
             doctor_id: this.selectedDoctor,
             ubs_id: this.selectedUbs,

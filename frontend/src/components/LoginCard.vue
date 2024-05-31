@@ -20,16 +20,15 @@
     methods: {
       sendForm()
       { 
-        this.axios
-          .get('user/'+this.userId)
-          .then(response => {
-            if(response.data?.id)
-              this.store.loggedUser = response.data;
-            else
-              this.$notify({
-                text: "Usuário não encotrado",
-                type: "error"
-              });
+        this.$store.dispatch('login', this.userId)
+          .then(() => {
+              this.$router.push('/');
+          })
+          .catch(() => {
+            this.$notify({
+              text: "Usuário não encotrado",
+              type: "error"
+            });
           })
       }
     }
