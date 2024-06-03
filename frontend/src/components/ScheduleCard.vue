@@ -1,13 +1,13 @@
 <template>
   <div class="calendar">
     <div class="selectors">
-      <select id="ubs" v-model="selectedUbs" @change="onUbsChanged" v-if="loggedType != 'Patient'">
-        <option v-if="loggedType != 'Receptionist'" :value="null"></option>       
+      <select id="ubs" v-model="selectedUbs" @change="onUbsChanged" v-if="!isPatient">
+        <option v-if="!isReceptionist" :value="null"></option>       
         <option v-for="(ubs, index) in ubsList" :value="ubs.id" :key="index">
           {{ubs.name}}
         </option>
       </select>         
-      <select id="doctor" v-model="selectedDoctor" @change="onDoctorChanged" v-if="loggedType == 'Receptionist'">
+      <select id="doctor" v-model="selectedDoctor" @change="onDoctorChanged" v-if="isReceptionist">
         <option v-for="(doctor, index) in doctorList" :value="doctor.id" :key="index">
           {{doctor.name}}
         </option>
@@ -20,12 +20,14 @@
           :class="[
             'line', 
             schedule.id == selectedSchedule?.id ? 'selected' : '',
-            schedule.status == 'Created' && loggedType == 'Doctor' ? 'selectable' : ''
+            changeLineColor(schedule)
           ]" 
-          @click="schedule.status == 'Created' ? onClickSchedule($event, schedule) : ''"
+          @click="isClickable(schedule) ? onClickSchedule($event, schedule) : null"
       >
         <div>{{schedule.scheduled_time}}</div>
-        <div>AINDA NÃO RETORNA</div>
+        <div v-if="!isDoctor">{{schedule.doctor?.name}}</div>
+        <div v-if="!isPatient">{{schedule.patient?.name}}</div>
+        <div v-if="!selectedUbs">{{schedule.ubs?.name}}</div>
         <div>{{schedule.status}}</div>
       </div>
     </div>
@@ -33,7 +35,7 @@
 </template>
 
 <script>
-  import { watch, inject, watchEffect } from 'vue';
+  import { watch, inject } from 'vue';
 
   export default {
     data() {     
@@ -45,10 +47,30 @@
         scheduleList: [],
         selectedUbs: null,
         selectedDoctor: null,
-        loggedType: this.$store.getters.getLoggedType,
-        loggedId: this.$store.getters.getLoggedId,
-        selectedSchedule: null,
-        viewState
+        viewState,
+      }
+    },
+    computed: {
+      loggedType() { 
+        return this.$store.getters.getLoggedType;
+      },
+      loggedId() { 
+        return this.$store.getters.getLoggedId;
+      },
+      isDoctor() { 
+        return this.loggedType === 'Doctor';
+      },
+      isPatient() { 
+        return this.loggedType === 'Patient';
+      },
+      isReceptionist() { 
+        return this.loggedType === 'Receptionist';
+      },
+      selectedSchedule() { 
+        return this.viewState.selectedSchedule;
+      },
+      reloadScheduleCard(){
+        return this.viewState.reloadScheduleCard
       }
     },
     mounted(){   
@@ -69,18 +91,23 @@
           break;
       }
 
-      watch(() => this.selectedSchedule, (newValue) => {
-        if (newValue === null) {
+      watch(() => this.reloadScheduleCard, (newValue) => {
+        if (newValue == true) {
           this.searchSchedules();
+          this.reloadScheduleCard = false;
         }
       });
-
-      watchEffect(() => {
-        this.selectedSchedule = this.viewState.selectedSchedule
-      });
-      
     },
-    methods:{
+    methods:{   
+      isClickable(schedule){
+        return schedule.status != 'NoShow' && this.loggedType != 'Receptionist';
+      },
+      changeLineColor(schedule){
+        if(this.loggedType == 'Receptionist')
+        return '';
+
+        return this.isClickable(schedule) ? 'selectable' : 'disabled' ;
+      },
       onUbsChanged(){
         this.doctorList = [];
         this.scheduleList = [];
@@ -97,8 +124,15 @@
         this.searchSchedules();
       },
       async searchUbs(){
+        var routes = {
+          "Doctor": 'user/'+this.loggedId+'/ubs',
+          "Receptionist": 'ubs/',
+        };
+
+        var selectedRoute = routes[this.loggedType];
+
         await this.axios
-          .get('ubs/')
+          .get(selectedRoute)
           .then(response => {
             if(response.data)
               this.ubsList = response.data;
@@ -191,11 +225,15 @@
     }
 
     .selectable:hover{
-      background-color: rgb(185, 198, 192);
+      background-color: rgba(0, 255, 34, 0.292);
+    }
+
+    .disabled{
+      background-color: rgba(255, 0, 0, 0.151);
     }
 
     .selected{
-      background-color: rgb(119, 198, 119);
+      background-color: rgba(0, 255, 34, 0.438);
     }
   }
 

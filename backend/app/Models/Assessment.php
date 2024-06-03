@@ -10,4 +10,5 @@ class Assessment extends Model
     use HasFactory;
     
     protected $fillable = ['schedule_id', 'comment'];
+    protected $hidden = [ 'created_at', 'updated_at', 'pivot'];
 }

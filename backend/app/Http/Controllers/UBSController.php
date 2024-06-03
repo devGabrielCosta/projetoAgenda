@@ -30,7 +30,12 @@ class UBSController extends Controller
  
     public function showSchedules($id)
     {
-        $ubs = UBS::find($id);
+        $ubs = UBS::with([
+            "schedules.assessment", 
+            "schedules.doctor", 
+            "schedules.patient", 
+            "schedules.ubs"
+        ])->find($id);
         
         if($ubs)
             return response()->json($ubs->schedules, 200);

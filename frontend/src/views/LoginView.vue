@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="login-main">
     <div class="content-delimiter">
         <LoginCard  :class="'box-shadow fix-padding'"/>
     </div> 
@@ -18,20 +18,7 @@
 
 <style>
 
-  #app{
-    display: flex;
-    flex-direction: column;
-  }
-
-  header{
-    background-color: black;
-    height: 4vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  main{
+  .login-main{
     background-color: rgb(216, 206, 206);
     height: 100vh;
   }

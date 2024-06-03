@@ -1,11 +1,9 @@
 <template>
-  <div id="app">
-    <RouterView />
-    <notifications class="customize-notification" position="bottom right"/>
-  </div>
+  <RouterView />
+  <notifications class="customize-notification" position="bottom right"/>
 </template>
 
-<script> 
+<script>  
   import { RouterView } from 'vue-router';
 
   export default {
@@ -17,6 +15,11 @@
 </script>
 
 <style>
+
+  #app{
+    display: flex;
+    flex-direction: column;
+  }
 
   html{ 
     font-size: 16px;

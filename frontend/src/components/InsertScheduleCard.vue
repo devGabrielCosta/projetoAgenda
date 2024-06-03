@@ -37,9 +37,12 @@
 
   import InsertPatientCard from './InsertPatientCard.vue'
   import ModalTemplate from './ModalTemplate.vue'
+  import { inject } from 'vue';
 
   export default {   
     data() {
+      const viewState = inject('viewState');
+
       return {
         showModal: false,
         patientList: {},
@@ -50,6 +53,7 @@
         selectedDoctor: null,
         scheduledTime: null,
         loggedId: this.$store.getters.getLoggedId,
+        viewState
       };
     },
     components: {
@@ -111,15 +115,17 @@
             scheduled_time: this.scheduledTime,
         };
 
-
         this.axios
           .post('schedule', body)
           .then(response => {
-            if(response.data)
+            if(response.data){
+              this.reloadScheduleCard();
               this.$notify({
                 text: "Agendamento inserido",
                 type: "success"
               });
+              this.resetForm();
+            }
           })
           .catch(error =>{
               this.$notify({
@@ -128,6 +134,16 @@
               });
           })
       },
+      reloadScheduleCard(){
+        this.viewState.reloadScheduleCard = true;
+      },
+      resetForm()
+      {
+        this.selectedDoctor = null,
+        this.selectedPacient = null,
+        this.selectedUbs = this.ubsList[0].id,
+        this.scheduledTime = null
+      }
     }
   }
 

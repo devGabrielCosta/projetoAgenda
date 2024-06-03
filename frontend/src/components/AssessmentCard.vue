@@ -1,17 +1,21 @@
 <template>
   <div class="insertScheduleCard">  
-    <h2>Atendimento {{ selectedSchedule?.id }}<button @click="patientNoShow">Não compareceu</button></h2>
+    <h2>
+      Atendimento {{ selectedSchedule?.id }} <template v-if="isDoctor"> - {{ selectedSchedule.patient.name }}</template>
+      <button @click="patientNoShow" v-if="showInsertFunctions">Não compareceu</button>
+    </h2>
     <form @submit.prevent="sendForm">
       <label for="comment">Texto da avaliação</label>
-      <textarea id="comment" v-model="comment"></textarea>
-      <button type="submit">Enviar</button>
+      <textarea id="comment" v-model="comment" v-if="showInsertFunctions"></textarea>
+      <textarea id="comment" v-model="textAreaValue" :disabled="true" v-else></textarea>
+      <button type="submit" v-if="showInsertFunctions">Enviar</button>
     </form>
   </div>
 </template>
 
 <script>
 
-  import { watchEffect, inject } from 'vue';
+  import { inject } from 'vue';
 
   export default {
     props: ['scheduleId'],
@@ -20,15 +24,29 @@
 
       return {
         comment: null,
-        selectedSchedule: null,
-        viewState
+        viewState,      
       };
-    },  
-    mounted(){
-      watchEffect(() => {
-        this.selectedSchedule = this.viewState.selectedSchedule;
-      }) 
-    },
+    }, 
+    computed: {
+      loggedType() { 
+        return this.$store.getters.getLoggedType;
+      },
+      isDoctor() { 
+        return this.loggedType == 'Doctor';
+      },
+      showInsertFunctions() { 
+        return this.isDoctor && this.selectedSchedule?.status == 'Created';
+      },
+      isReceptionist() { 
+        return this.loggedType == 'Receptionist';
+      },
+      selectedSchedule() { 
+        return this.viewState.selectedSchedule;
+      },
+      textAreaValue(){
+        return this.selectedSchedule?.assessment?.comment
+      }
+    }, 
     methods: {
       sendForm()
       { 
@@ -54,6 +72,7 @@
       },
       changeStateSchedule(schedule){
         this.viewState.selectedSchedule = schedule
+        this.viewState.reloadScheduleCard = true;
       }
     }
   }

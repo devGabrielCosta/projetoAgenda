@@ -10,10 +10,11 @@ class User extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'type'];
+    protected $hidden = [ 'created_at', 'updated_at', 'pivot'];
   
     public function UBS()
     {
-        return $this->belongsToMany(User::class, 'doctors_ubs', 'doctor_id', 'ubs_id');
+        return $this->belongsToMany(UBS::class, 'doctors_ubs', 'doctor_id', 'ubs_id');
     }
    
     public function schedules()

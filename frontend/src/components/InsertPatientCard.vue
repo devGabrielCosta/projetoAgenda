@@ -1,5 +1,5 @@
 <template>
-  <div class="insertScheduleCard">  
+  <div class="insertPatientCard">  
     <h1>Inserir Paciente</h1>
     <form @submit.prevent="sendForm">
       <label for="name">Nome</label>
@@ -50,7 +50,7 @@
 
 <style scoped>
 
-  .insertScheduleCard{
+  .insertPatientCard{
     background-color: white;
 
       form {

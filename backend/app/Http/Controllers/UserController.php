@@ -13,7 +13,7 @@ class UserController extends Controller
         if($request->has("type"))
             $user = User::where('type', $request->type)->get();  
         else
-            $user = User::all();  
+            $user = User::all(); 
 
         return response()->json($user, 200);
     }
@@ -28,14 +28,28 @@ class UserController extends Controller
         $user = User::find($id);
         
         if($user)
-        {
+        {   
             $schedules = $user->schedules;
+            $schedules->load('doctor');
+            $schedules->load('patient');
+            $schedules->load('assessment');
+            $schedules->load('ubs');
 
             if($request->has("ubs_id"))
                 $schedules = $schedules->where("ubs_id", $request->ubs_id);
 
             return response()->json($schedules, 200);
         }           
+
+        return response()->json("Usuário não encotrado", 400);
+    }
+ 
+    public function showUbs($id, Request $request)
+    {       
+        $user = User::find($id);
+        
+        if($user)
+            return response()->json($user->ubs, 200);
 
         return response()->json("Usuário não encotrado", 400);
     }
