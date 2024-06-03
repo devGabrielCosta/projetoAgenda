@@ -5,9 +5,9 @@
   </header>
   <main class="home-main">
     <div class="content-delimiter">
-        <ScheduleCard :class="'box-shadow fix-size fix-padding'" />
-        <InsertScheduleCard v-if="isReceptionist" :class="'box-shadow fix-size fix-padding'"/>
-        <AssessmentCard v-else-if="!isReceptionist && selectedSchedule" :class="'box-shadow fix-size fix-padding'"/>
+        <ScheduleCard :class="'box-shadow schedule-card card'" />
+        <InsertScheduleCard v-if="isReceptionist" :class="'box-shadow insert-schedule-card card'"/>
+        <AssessmentCard v-else-if="!isReceptionist && selectedSchedule" :class="'box-shadow assessment-card card'"/>
     </div> 
   </main>
 </template>
@@ -56,13 +56,13 @@
   }
 </script>
 
-<style>
+<style scoped>
 
   header{
     background-color: black;
     color: white;
-    padding: 0 4vw;
-    height: 4vh;
+    padding: 0 2vh;
+    height: 3vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -70,27 +70,27 @@
 
   .home-main{
     background-color: rgb(216, 206, 206);
-    height: 96vh;
+    height: 97vh; 
+    overflow: auto;
   }
 
-  .content-delimiter{
-    width: min(95vw, 1000px);
-    height: 100%;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    gap: 3vh;
+  .card{
+    padding: 2vh 2vw;
+    border-radius: 10px;
   }
 
-  .fix-padding{
-    padding: 2vh;
-  }
-
-  .fix-size{
+  .schedule-card{
     width: 100%;
-    height: 40vh;
+    max-height: 50vh;
+  }
+
+  .insert-schedule-card{
+    width: 100%;
+  }
+
+  .assessment-card{
+    width: 100%;
+    min-height: 30vh;
   }
 
 </style>

@@ -5,6 +5,9 @@
         <div class="modal-container">
 
           <div class="modal-header">
+            <button class="modal-default-button red" @click="$emit('close')">
+              X
+            </button>
           </div>
 
           <div class="modal-body">
@@ -12,9 +15,6 @@
           </div>
 
           <div class="modal-footer">
-            <button class="modal-default-button" @click="$emit('close')">
-              Fechar
-            </button>
           </div>
         </div>
       </div>
@@ -49,9 +49,9 @@
   }
 
   .modal-container {
-    width: 300px;
+    width: max(300px, 15vw);
+    padding: 2vh 2vh;
     margin: 0px auto;
-    padding: 2vw;
     background-color: white;  
     transition: all 0.3s ease;
     display: flex;
@@ -59,12 +59,16 @@
     justify-content: space-around;
   }
 
-  .modal-body {
-    background-color: black;
-  }
-
   .modal-default-button {
     float: right;
+    padding: 0.3rem 0.6rem;
+    background-color: rgb(182, 0, 0);
+    color: white;
+    min-width: 0;
+  }
+
+  .modal-default-button:hover {
+    background-color: rgb(134, 0, 0);
   }
 
   .modal-enter {

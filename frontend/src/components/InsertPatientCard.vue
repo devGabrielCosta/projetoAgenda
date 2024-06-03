@@ -1,10 +1,10 @@
 <template>
-  <div class="insertPatientCard">  
+  <div class="insert-patient-card">  
     <h1>Inserir Paciente</h1>
     <form @submit.prevent="sendForm">
       <label for="name">Nome</label>
-      <input type="text" id="name" v-model="name">
-      <button type="submit">Enviar</button>
+      <input type="text" id="name" v-model="name" required> <br/>
+      <button class="green" type="submit">Enviar</button>
     </form>
   </div>
 </template>
@@ -50,20 +50,20 @@
 
 <style scoped>
 
-  .insertPatientCard{
+  .insert-patient-card{
     background-color: white;
 
       form {
-      margin-top: 20px;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-      }
-      input[type="text"] {
-        width: 200px;
-        padding: 5px;
-        margin-bottom: 10px;
+        margin-top: 2rem;
+      
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        input {
+          margin-bottom: 2rem;
+        }
       }
   }
 

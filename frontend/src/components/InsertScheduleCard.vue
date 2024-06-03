@@ -1,5 +1,5 @@
 <template>
-  <div class="insertScheduleCard">
+  <div class="insert-schedule-card">
     <h1>Criar Agendamento <button id="show-modal" @click="showModal = true">Inserir Paciente</button></h1>
     <form @submit.prevent="sendForm">
       <label for="patient">Paciente:</label>
@@ -25,7 +25,7 @@
       <label for="user_id">Horário:</label>        
       <input type="datetime-local" id="user_id" v-model="scheduledTime" required> 
       <br/><br/> 
-      <button type="submit">Enviar</button>
+      <button class="green" type="submit">Enviar</button>
     </form>
       <ModalTemplate v-if="showModal" @close="showModal = false">
           <InsertPatientCard :parentCallback="closeModal"/>
@@ -151,7 +151,7 @@
 
 <style scoped>
 
-  .insertScheduleCard{
+  .insert-schedule-card{
     background-color: white;
 
       h1{
@@ -161,19 +161,19 @@
       }
 
       form {
-      margin-top: 20px;
+        margin-top: 1rem;
       }
 
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 0.5rem;
       }
 
       input,
       select{
-        min-width: 20%;
-        margin-bottom: 7px;
-      }
+        min-width: 30%;
+        margin-bottom: 1rem;
+      }     
   }
 
 </style>

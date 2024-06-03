@@ -1,7 +1,7 @@
 <template>
   <main class="login-main">
     <div class="content-delimiter">
-        <LoginCard  :class="'box-shadow fix-padding'"/>
+        <LoginCard  :class="'box-shadow card'"/>
     </div> 
   </main>
 </template>
@@ -16,7 +16,7 @@
   };
 </script>
 
-<style>
+<style scoped>
 
   .login-main{
     background-color: rgb(216, 206, 206);
@@ -24,18 +24,13 @@
   }
 
   .content-delimiter{
-    width: min(95vw, 1080px);
-    height: 100%;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    gap: 3vh;
   }
 
-  .fix-padding{
+  .card{
     padding: 5vh;
+    border-radius: 15px;
   }
 
 </style>

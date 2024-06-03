@@ -1,14 +1,14 @@
 <template>
-  <div class="insertScheduleCard">  
+  <div class="assessment-card">  
     <h2>
-      Atendimento {{ selectedSchedule?.id }} <template v-if="isDoctor"> - {{ selectedSchedule.patient.name }}</template>
-      <button @click="patientNoShow" v-if="showInsertFunctions">Não compareceu</button>
+      Atendimento {{ selectedSchedule?.id }} <template v-if="isDoctor">- {{ selectedSchedule.patient.name }}</template>
+      <button class="red" @click="patientNoShow" v-if="showInsertFunctions">Não compareceu</button>
     </h2>
     <form @submit.prevent="sendForm">
       <label for="comment">Texto da avaliação</label>
-      <textarea id="comment" v-model="comment" v-if="showInsertFunctions"></textarea>
-      <textarea id="comment" v-model="textAreaValue" :disabled="true" v-else></textarea>
-      <button type="submit" v-if="showInsertFunctions">Enviar</button>
+      <textarea class="comment" v-model="comment" v-if="showInsertFunctions"></textarea>
+      <textarea class="comment" v-model="textAreaValue" :disabled="true" v-else></textarea>
+      <button class="green" type="submit" v-if="showInsertFunctions">Enviar</button>
     </form>
   </div>
 </template>
@@ -81,31 +81,29 @@
 
 <style scoped>
 
-  .insertScheduleCard{
+  .assessment-card{
     background-color: white;
 
       h2{
-        width: 100%;
+        height: 3vh;
         display: flex;
         justify-content: space-between;
+        align-items: center;
       }
 
       form {
-      margin-top: 20px;
+        margin-top: 1rem;
       }
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 0.5rem;
       }
       textarea {
         width: 100%;
-        min-height: 150px;
-        padding: 5px;
-        margin-bottom: 10px;
+        min-height: 8rem;
+        margin-bottom: 1rem;
         resize: none;
-      }
-      button:hover {
-        background-color: #0056b3;
+        padding: 0.2rem;
       }
   }
 
