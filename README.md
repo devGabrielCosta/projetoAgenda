@@ -22,7 +22,7 @@ Como não estava especificado não fiz uma tela para criar usuários e ubs, mas 
 
 ---
 São necessários 2 terminais para rodar o projeto. <br/>
-Deixei o sqlite pronto só sendo necessário instalar as dependências e fazer as migrações. <br/>
+Deixei o sqlite e o .env pronto só sendo necessário instalar as dependências e fazer as migrações. <br/>
 
 ---
 ## ./backend
