@@ -127,9 +127,9 @@
               this.resetForm();
             }
           })
-          .catch(error =>{
+          .catch(error => {
               this.$notify({
-                text: error.response.data,
+                text: error.response.data.message,
                 type: "error"
               });
           })

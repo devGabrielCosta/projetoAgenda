@@ -193,8 +193,17 @@
           .get(selectedRoute)
           .then(response => {
             if(response.data)
-              this.scheduleList = response.data;
+              this.scheduleList = this.orderByDate(response.data);
           })
+      },
+      orderByDate(scheduleList) {
+        function compareByDate(a, b) {
+          let dataA = new Date(a.scheduled_time);
+          let dataB = new Date(b.scheduled_time);
+          return dataA - dataB;
+        }
+
+        return scheduleList.sort(compareByDate);
       },
       onClickSchedule(event, schedule){
         this.changeStateSchedule(schedule);          

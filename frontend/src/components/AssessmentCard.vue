@@ -6,7 +6,7 @@
     </h2>
     <form @submit.prevent="sendForm">
       <label for="comment">Texto da avaliação</label>
-      <textarea class="comment" v-model="comment" v-if="showInsertFunctions"></textarea>
+      <textarea class="comment" v-model="comment" v-if="showInsertFunctions" required></textarea>
       <textarea class="comment" v-model="textAreaValue" :disabled="true" v-else></textarea>
       <button class="green" type="submit" v-if="showInsertFunctions">Enviar</button>
     </form>
