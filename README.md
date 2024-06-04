@@ -24,6 +24,7 @@ Como não estava especificado não fiz uma tela para criar usuários e ubs, mas 
 São necessários 2 terminais para rodar o projeto. <br/>
 Deixei o sqlite pronto só sendo necessário instalar as dependências e fazer as migrações. <br/>
 
+---
 ## ./backend
 ```
 composer install
@@ -33,6 +34,7 @@ php artisan db:seed       //Insere dados necessários pra todo o funcionamento
 php artisan serve
 ```
 
+A rota do back no front está fixa pra localhost:8000/api se necessário alterar os arquivos **frontend/src/main.js** e **frontend/src/vuex.js**
 ## ./frontend
 ```
 npm install
