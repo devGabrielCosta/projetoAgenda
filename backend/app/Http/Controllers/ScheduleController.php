@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 Use App\Models\Schedule;
+Use App\Http\Requests\CreateScheduleRequest;
+Use App\Http\Requests\PatchScheduleRequest;
+use Illuminate\Database\QueryException;
 
 class ScheduleController extends Controller
 {
@@ -13,40 +15,50 @@ class ScheduleController extends Controller
         return response()->json(Schedule::all(), 200);
     }
  
-    public function show($id)
+    public function show(int $id)
     {
         return response()->json(Schedule::find($id), 200);
     }
 
-    public function store(Request $request)
+    public function store(CreateScheduleRequest $request)
     {   
-        $fields = $request->all();
-        $fields["scheduled_time"] = Carbon::parse($fields["scheduled_time"])->format("Y-m-d H:i:s");
+        $validated = $request->validated();
+        $validated["scheduled_time"] = Carbon::parse($validated["scheduled_time"])->format("Y-m-d H:i:s");
 
         $dateTimeUsed = Schedule::where([
-            ['scheduled_time', '=', $fields["scheduled_time"]],
-            ['doctor_id', '=', $fields["doctor_id"]]
+            ['scheduled_time', '=', $validated["scheduled_time"]],
+            ['doctor_id', '=', $validated["doctor_id"]]
         ])->get();
 
         if (!$dateTimeUsed->isEmpty())
-            return response()->json('Horário da consulta invalido', 400);
+            return response()->json('Horário da consulta inválido', 400);
 
-        return response()->json(Schedule::create($fields), 201);
+        return response()->json(Schedule::create($validated), 201);
     }
    
-    public function patch($id, Request $request)
-    {
+    public function patch(int $id, PatchScheduleRequest $request)
+    {   
+        $validated = $request->validated();
         $schedule = Schedule::find($id);
+          
+        if(!$schedule)
+            return response()->json("Agendamento não encontrado", 400);
 
-        if($request->has('status'))
-            $schedule->status = $request->status;   
+        if($schedule->status != "Created")
+            return response()->json("Status já definido", 400);
 
-        $schedule->save();
+        $schedule->update($validated);
         return response()->json($schedule, 200);
     }
    
-    public function delete($id)
-    {
-        return response()->json(Schedule::find($id)?->delete(), 200);
+    public function delete(int $id)
+    {   
+        try {
+            return response()->json(Schedule::find($id)?->delete(), 200);
+        } catch (QueryException $e) {
+            if ($e->errorInfo[0] == '23000') {
+                return response()->json(['message' => 'Não é possível excluir esta entrada devido a restrições de integridade de chave estrangeira.'], 400);
+            } 
+        }      
     }
 }

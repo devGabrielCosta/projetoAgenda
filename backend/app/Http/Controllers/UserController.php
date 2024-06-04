@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 Use App\Models\User;
-Use App\Models\Enums\UserType;
+use App\Http\Requests\CreateUserRequest;
 
 class UserController extends Controller
 {
@@ -18,12 +18,12 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
  
-    public function show($id)
+    public function show(int $id)
     {
         return response()->json(User::find($id), 200);
     }
  
-    public function showSchedules($id, Request $request)
+    public function showSchedules(int $id, Request $request)
     {       
         $user = User::find($id);
         
@@ -41,27 +41,27 @@ class UserController extends Controller
             return response()->json($schedules, 200);
         }           
 
-        return response()->json("Usuário não encotrado", 400);
+        return response()->json("Usuário não encontrado", 400);
     }
  
-    public function showUbs($id, Request $request)
+    public function showUbs(int $id)
     {       
         $user = User::find($id);
         
         if($user)
             return response()->json($user->ubs, 200);
 
-        return response()->json("Usuário não encotrado", 400);
+        return response()->json("Usuário não encontrado", 400);
     }
 
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {   
-        $fields = $request->all();
+        $validated = $request->validated();
 
-        $user = User::create($fields);
+        $user = User::create($validated);
 
         if($user->type === 'Doctor')
-            $user->UBS()->attach($fields['UBS']);
+            $user->UBS()->attach($validated['UBS']);
 
         return response()->json($user, 201);
     }
