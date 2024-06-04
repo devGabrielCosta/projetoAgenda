@@ -27,8 +27,9 @@ Deixei o sqlite pronto só sendo necessário instalar as dependências e fazer a
 ## ./backend
 ```
 composer install
+php artisan test          //Executa todos os testes de feature
 php artisan migrate:fresh //Limpa o db e faz a nova migração
-php artisan db:seed //Insere dados pra conferir todo o funcionamento
+php artisan db:seed       //Insere dados necessários pra todo o funcionamento
 php artisan serve
 ```
 
