@@ -20,7 +20,7 @@ class AssessmentController extends Controller
 
         $schedule = Schedule::find($validated['schedule_id']);
         if($schedule->status != "Created")
-            return response()->json("Consulta já realizada", 400);
+            return response()->json("Assessment already updated", 400);
 
         $schedule->status = 'Attended';
 

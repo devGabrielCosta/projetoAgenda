@@ -41,7 +41,7 @@ class UserController extends Controller
             return response()->json($schedules, 200);
         }           
 
-        return response()->json("Usuário não encontrado", 400);
+        return response()->json("User not found", 400);
     }
  
     public function showUbs(int $id)
@@ -51,7 +51,7 @@ class UserController extends Controller
         if($user)
             return response()->json($user->ubs, 200);
 
-        return response()->json("Usuário não encontrado", 400);
+        return response()->json("User not found", 400);
     }
 
     public function store(CreateUserRequest $request)

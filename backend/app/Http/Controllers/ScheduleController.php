@@ -23,7 +23,7 @@ class ScheduleController extends Controller
     public function store(CreateScheduleRequest $request)
     {   
         $validated = $request->validated();
-        $validated["scheduled_time"] = Carbon::parse($validated["scheduled_time"])->format("Y-m-d H:i:s");
+        $validated["scheduled_time"] = Carbon::parse($validated["scheduled_time"])->format("Y-m-d H:i:00");
 
         $dateTimeUsed = Schedule::where([
             ['scheduled_time', '=', $validated["scheduled_time"]],
@@ -31,7 +31,7 @@ class ScheduleController extends Controller
         ])->get();
 
         if (!$dateTimeUsed->isEmpty())
-            return response()->json('Horário da consulta inválido', 400);
+            return response()->json('Invalid scheduled time', 400);
 
         return response()->json(Schedule::create($validated), 201);
     }
@@ -42,10 +42,10 @@ class ScheduleController extends Controller
         $schedule = Schedule::find($id);
           
         if(!$schedule)
-            return response()->json("Agendamento não encontrado", 400);
+            return response()->json("Schedule not found", 400);
 
         if($schedule->status != "Created")
-            return response()->json("Status já definido", 400);
+            return response()->json("Status already set", 400);
 
         $schedule->update($validated);
         return response()->json($schedule, 200);
@@ -57,7 +57,7 @@ class ScheduleController extends Controller
             return response()->json(Schedule::find($id)?->delete(), 200);
         } catch (QueryException $e) {
             if ($e->errorInfo[0] == '23000') {
-                return response()->json(['message' => 'Não é possível excluir esta entrada devido a restrições de integridade de chave estrangeira.'], 400);
+                return response()->json(['message' => "Cannot delete this entry due to foreign key integrity constraints"], 400);
             } 
         }      
     }

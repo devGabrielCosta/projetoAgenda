@@ -26,7 +26,7 @@ class UBSController extends Controller
         if($ubs)
             return response()->json($ubs->doctors, 200);
 
-        return response()->json("UBS não encontrada", 400);
+        return response()->json("UBS not found", 400);
     }
  
     public function showSchedules(int $id)
@@ -41,7 +41,7 @@ class UBSController extends Controller
         if($ubs)
             return response()->json($ubs->schedules, 200);
 
-        return response()->json("UBS não encontrada", 400);
+        return response()->json("UBS not found", 400);
     }
 
     public function store(CreateUBSRequest $request)

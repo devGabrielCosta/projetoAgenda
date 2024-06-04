@@ -10,40 +10,29 @@ use App\Models\User;
 use App\Models\UBS;
 use App\Models\Schedule;
 
-class TableSeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
         $faker = FakerFactory::create();
 
-        $ubs = [];
-        for($i = 0; $i < 3; $i++)
-            array_push($ubs, UBS::create([
-                'name' => $faker->city().' - UBS '.$faker->numberBetween(1, 1000),
-            ]));
+        $ubs = UBS::factory()->count(3)->create();
 
-        $patients = [];
-        for($i = 0; $i < 3; $i++)
-            array_push($patients, User::create([
-                'name' => $faker->name,
-                'type' => 'Patient',
-            ]));
+        $patients = User::factory()->count(3)->create([
+            'type' => 'Patient',
+        ]);
 
-        $doctors = [];
-        for($i = 0; $i < 5; $i++)
-            array_push($doctors, User::create([
-                'name' => $faker->name,
-                'type' => 'Doctor',
-            ]));
+        $doctors = User::factory()->count(5)->create([
+            'type' => 'Doctor',
+        ]);
 
         $doctors[0]->UBS()->attach($ubs[0]->id);
         $doctors[1]->UBS()->attach($ubs[0]->id);
         $doctors[2]->UBS()->attach($ubs[1]->id);
         $doctors[3]->UBS()->attach($ubs[1]->id);
         $doctors[4]->UBS()->attach($ubs[2]->id);
-
-        $receptionist = User::create([
-            'name' => $faker->name,
+   
+        $receptionist = User::factory()->create([
             'type' => 'Receptionist',
         ]);
             
